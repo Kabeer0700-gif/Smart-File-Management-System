@@ -1,4 +1,3 @@
-# Smart-File-Management-System
 # Smart File Management System (SFMS)
 
 ## Overview
