@@ -1,26 +1,16 @@
 class StatisticsManager:
 
-    def total_files(
-        self,
-        files
-    ):
-
+    def total_files(self,files):
         return len(files)
 
-    def total_storage(
-        self,
-        files
-    ):
+    def total_storage(self,files):
 
         return sum(
             file.size
             for file in files
         )
 
-    def category_statistics(
-        self,
-        files
-    ):
+    def category_statistics(self,files):
 
         categories = {}
 
@@ -37,10 +27,7 @@ class StatisticsManager:
 
         return categories
 
-    def largest_file(
-        self,
-        files
-    ):
+    def largest_file(self,files):
 
         return max(
             files,
@@ -48,10 +35,7 @@ class StatisticsManager:
             file.size
         )
 
-    def smallest_file(
-        self,
-        files
-    ):
+    def smallest_file(self,files):
 
         return min(
             files,
@@ -59,10 +43,7 @@ class StatisticsManager:
             file.size
         )
 
-    def format_size(
-        self,
-        size
-    ):
+    def format_size(self,size):
 
         if size < 1024:
             return f"{size} B"
