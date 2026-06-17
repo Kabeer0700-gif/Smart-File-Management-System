@@ -53,3 +53,39 @@ class ReportGenerator:
         print(
             "TXT Report Generated"
         )
+
+    def generate_csv_report(self,files):
+
+        with open(
+            "report.csv",
+            "w",
+            newline="",
+            encoding="utf-8"
+        ) as file:
+
+            writer = csv.writer(file)
+
+            writer.writerow(
+                [
+                    "Name",
+                    "Extension",
+                    "Size",
+                    "Path"
+                ]
+            )
+
+            for item in files:
+
+                writer.writerow(
+                    [
+                        item.name,
+                        item.extension,
+                        item.size,
+                        item.path
+                    ]
+                )
+
+        print(
+            "CSV Report Generated"
+        )
+        
