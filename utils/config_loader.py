@@ -3,6 +3,7 @@ import json
 class ConfigLoader:
     def __init__(self):
         self.config_file = Path("config.json")
+        self.config = self.load_config()
 
     def load_config(self):
         if not self.config_file.exists():
@@ -13,4 +14,6 @@ class ConfigLoader:
         with open(self.config_file,'r',encoding='utf-8') as file:
                 return json.load(file)
         
-        
+    def get(self, key):
+        config = self.load_config()
+        return config.get(key)
