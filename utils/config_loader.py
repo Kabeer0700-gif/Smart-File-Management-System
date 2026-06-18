@@ -15,5 +15,4 @@ class ConfigLoader:
                 return json.load(file)
         
     def get(self, key):
-        config = self.load_config()
-        return config.get(key)
+        return self.config.get(key)
