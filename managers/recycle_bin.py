@@ -94,6 +94,12 @@ class RecycleBinManager:
                 filename
             )
 
+            if not source.exists():
+                raise FileNotFoundError(
+                    f"{filename} not found "
+                    f"in recycle bin."
+                )
+
             original_path.parent.mkdir(
                 parents=True,
                 exist_ok=True
@@ -144,19 +150,71 @@ class RecycleBinManager:
             )
 
     def delete_permanently(self,filename):
+        try:
+            file_path = (
+                self.recycle_bin /
+                filename
+            )
 
-        file_path = (
-            self.recycle_bin /
-            filename
-        )
-
-        if file_path.exists():
+            if not file_path.exists():
+                raise FileNotFoundError(
+                    f"{filename} not found."
+                )
 
             file_path.unlink()
 
+            metadata = json.loads(
+                self.metadata_file.read_text(
+                    encoding="utf-8"
+                )
+            )
+
+            if filename in metadata:
+
+                del metadata[filename]
+
+                self.metadata_file.write_text(
+                    json.dumps(
+                        metadata,
+                        indent=4
+                    ),
+                    encoding="utf-8"
+                )
+
             print(
                 f"Deleted: {filename}"
-            )    
+            )
+
+        except FileNotFoundError as e:
+
+            print(
+                f"Delete Error: {e}"
+            )
+
+        except PermissionError:
+
+            print(
+                "Permission denied while "
+                "deleting file."
+            )
+
+        except Exception as e:
+
+            print(
+                f"Unexpected Error: {e}"
+            ) 
 
     def list_files(self):
-        return list(self.recycle_bin.iterdir())
+        try:
+
+            return list(
+                self.recycle_bin.iterdir()
+            )
+
+        except Exception as e:
+
+            print(
+                f"List Error: {e}"
+            )
+
+            return []
