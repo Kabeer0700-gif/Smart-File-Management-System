@@ -4,88 +4,96 @@ import csv
 class ReportGenerator:
 
     def generate_txt_report(self,files,statistics):
-
-        with open(
-            "report.txt",
-            "w",
-            encoding="utf-8"
-        ) as report:
-
-            report.write(
-                "SMART FILE MANAGEMENT REPORT\n"
-            )
-
-            report.write(
-                "=" * 50 + "\n\n"
-            )
-
-            report.write(
-                f"Total Files: "
-                f"{statistics['total_files']}\n"
-            )
-
-            report.write(
-                f"Total Size: "
-                f"{statistics['total_size']}\n\n"
-            )
-
-            for file in files:
+        try:
+            with open(
+                "report.txt",
+                "w",
+                encoding="utf-8"
+               ) as report:
 
                 report.write(
-                    f"Name: {file.name}\n"
+                    "SMART FILE MANAGEMENT REPORT\n"
                 )
 
                 report.write(
-                    f"Extension: "
-                    f"{file.extension}\n"
+                    "=" * 50 + "\n\n"
                 )
 
                 report.write(
-                    f"Size: "
-                    f"{file.size}\n"
+                    f"Total Files: "
+                    f"{statistics['total_files']}\n"
                 )
 
                 report.write(
-                    f"Path: "
-                    f"{file.path}\n\n"
+                    f"Total Size: "
+                    f"{statistics['total_size']}\n\n"
                 )
 
-        print(
-            "TXT Report Generated"
-        )
+                for file in files:
+
+                    report.write(
+                        f"Name: {file.name}\n"
+                    )
+
+                    report.write(
+                        f"Extension: "
+                        f"{file.extension}\n"
+                    )
+
+                    report.write(
+                        f"Size: "
+                        f"{file.size}\n"
+                    )
+
+                    report.write(
+                        f"Path: "
+                        f"{file.path}\n\n"
+                    )
+
+                print(
+                    "TXT Report Generated"
+                    )
+        except Exception as e:
+            print(
+            f"Failed to generate report: {e}"
+                )
 
     def generate_csv_report(self,files):
+        try:
+            with open(
+                "report.csv",
+                "w",
+                newline="",
+                encoding="utf-8"
+            ) as file:
 
-        with open(
-            "report.csv",
-            "w",
-            newline="",
-            encoding="utf-8"
-        ) as file:
-
-            writer = csv.writer(file)
-
-            writer.writerow(
-                [
-                    "Name",
-                    "Extension",
-                    "Size",
-                    "Path"
-                ]
-            )
-
-            for item in files:
+                writer = csv.writer(file)
 
                 writer.writerow(
                     [
-                        item.name,
-                        item.extension,
-                        item.size,
-                        item.path
+                        "Name",
+                        "Extension",
+                        "Size",
+                        "Path"
                     ]
                 )
 
-        print(
-            "CSV Report Generated"
-        )
-        
+                for item in files:
+
+                    writer.writerow(
+                        [
+                            item.name,
+                            item.extension,
+                            item.size,
+                            item.path
+                        ]
+                    )
+
+            print(
+                "CSV Report Generated"
+            )
+        except Exception as e:
+            print(
+                f"Failed to generate "
+                f"CSV report: {e}"
+            )
