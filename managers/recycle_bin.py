@@ -3,89 +3,145 @@ import shutil
 import json
 class RecycleBinManager:
     def __init__(self):
-        self.recycle_bin = Path('recycle_bin')
-        self.recycle_bin.mkdir(exist_ok=True)
+        try:
+            self.recycle_bin = Path('recycle_bin')
+            self.recycle_bin.mkdir(exist_ok=True)
 
-        self.metadata_file = Path('recycle_bin_metadata.json')
+            self.metadata_file = Path('recycle_bin_metadata.json')
 
-        if not self.metadata_file.exists():
+            if not self.metadata_file.exists():
 
-            self.metadata_file.write_text(
-                "{}"
+                self.metadata_file.write_text(
+                    "{}"
+                )
+        except Exception as e:
+            print(
+                f"Recycle Bin Initialization Error: {e}"
             )
 
     def move_to_recycle_bin(self, file):
+        try:
+            source = Path(file.path)
 
-        source = Path(file.path)
-
-        destination = (
-            self.recycle_bin /
-            source.name
-        )
-
-        shutil.move(
-            str(source),
-            str(destination)
-        )
-
-        metadata = json.loads(
-            self.metadata_file.read_text()
-        )
-
-        metadata[source.name] = str(source)
-
-        self.metadata_file.write_text(
-            json.dumps(
-                metadata,
-                indent=4
+            destination = (
+                self.recycle_bin /
+                source.name
             )
-        )
 
-    def restore_file(self,filename):
+            shutil.move(
+                str(source),
+                str(destination)
+            )
 
-        metadata = json.loads(
-            self.metadata_file.read_text()
-        )
+            metadata = json.loads(
+                self.metadata_file.read_text()
+            )
 
-        if filename not in metadata:
+            metadata[source.name] = str(source)
+
+            self.metadata_file.write_text(
+                json.dumps(
+                    metadata,
+                    indent=4
+                )
+            )
+        except FileNotFoundError as e:
 
             print(
-                "File not found"
+                f"Move Error: {e}"
             )
 
-            return
+        except PermissionError:
 
-        original_path = Path(
-            metadata[filename]
-        )
-
-        source = (
-            self.recycle_bin /
-            filename
-        )
-
-        original_path.parent.mkdir(
-            parents=True,
-            exist_ok=True
-        )
-
-        shutil.move(
-            str(source),
-            str(original_path)
-        )
-
-        del metadata[filename]
-
-        self.metadata_file.write_text(
-            json.dumps(
-                metadata,
-                indent=4
+            print(
+                "Permission denied while "
+                "moving file."
             )
-        )
 
-        print(
-            f"Restored: {filename}"
-        )
+        except json.JSONDecodeError:
+
+            print(
+                "Metadata file contains "
+                "invalid JSON."
+            )
+
+        except Exception as e:
+
+            print(
+                f"Unexpected Error: {e}"
+            )
+
+    def restore_file(self,filename):
+        try:
+            metadata = json.loads(
+                self.metadata_file.read_text()
+            )
+
+            if filename not in metadata:
+
+                print(
+                    "File not found"
+                )
+
+                return
+
+            original_path = Path(
+                metadata[filename]
+            )
+
+            source = (
+                self.recycle_bin /
+                filename
+            )
+
+            original_path.parent.mkdir(
+                parents=True,
+                exist_ok=True
+            )
+
+            shutil.move(
+                str(source),
+                str(original_path)
+            )
+
+            del metadata[filename]
+
+            self.metadata_file.write_text(
+                json.dumps(
+                    metadata,
+                    indent=4
+                )
+            )
+
+            print(
+                f"Restored: {filename}"
+            )
+        
+        except FileNotFoundError as e:
+
+            print(
+                f"Move Error: {e}"
+            )
+
+        except PermissionError:
+
+            print(
+                "Permission denied while "
+                "moving file."
+            )
+
+        except json.JSONDecodeError:
+
+            print(
+                "Metadata file contains "
+                "invalid JSON."
+            )
+
+        except Exception as e:
+
+            print(
+                f"Unexpected Error: {e}"
+            )
 
     def delete_permanently(self,filename):
 
