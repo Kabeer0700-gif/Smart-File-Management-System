@@ -86,10 +86,15 @@ class FileManager:
 
     def filter_by_extension(self,files,extension):
         filter_files = []
-
-        for item in files:
-            if item.extension.lower() == extension.lower():
-                filter_files.append(item)
+        try:
+            for item in files:
+                if item.extension.lower() == extension.lower():
+                    filter_files.append(item)
+                    
+        except AttributeError:
+            print(
+                "Invalid file object found."
+            )
 
         return filter_files
     
