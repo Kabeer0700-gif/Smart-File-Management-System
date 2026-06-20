@@ -40,7 +40,7 @@ class Organizer:
     def move_file(self,source,destination):
         try:
             shutil.move(str(source),str(destination))
-            
+
         except FileNotFoundError:
             print(
                 f"File not found: {source}"
@@ -63,16 +63,28 @@ class Organizer:
 
     def organize_file(self,files):
         for file in files:
-            category = self.get_category(file.extension)
-            source = Path(file.path)
-            folder = self.create_category_folder(source.parent,category)
+            try:
+                category = self.get_category(file.extension)
+                source = Path(file.path)
+                folder = self.create_category_folder(source.parent,category)
+                if folder is None:
+                    continue
 
-            destination = (folder / category)
+                destination = (folder / category)
 
-            self.move_file(source,destination)
+                self.move_file(source,destination)
 
-            print(
-                    f"Moved: {source.name} ---> {destination.name}"
+                print(
+                        f"Moved: {source.name} ---> {destination.name}"
+                    )
+            except AttributeError:
+                print(
+                    f"Invalid file object: {file}"
                 )
-    
+
+            except Exception as e:
+                print(
+                    f"Error organizing file "
+                    f"{file}: {e}"
+                )
 
