@@ -4,12 +4,41 @@ from datetime import datetime
 class FileManager:
     def scan_directory(self,path):
         files = []
-        directory = Path(path)
-        for item in directory.rglob("*"):
-            if item.is_file():
-                file_info = self.get_file_metaData(item)
-                files.append(file_info)
+        try:
+            directory = Path(path)
+            if not directory.exists():
+                raise FileNotFoundError(
+                    f"Directory '{path}' does not exist."
+                )
 
+            if not directory.is_dir():
+                raise NotADirectoryError(
+                    f"'{path}' is not a directory."
+                )
+            for item in directory.rglob("*"):
+                try:
+                    if item.is_file():
+                        file_info = self.get_file_metaData(item)
+                        files.append(file_info)
+
+                except PermissionError:
+                    print(
+                        f"Permission denied: {item}"
+                    )
+
+                except Exception as e:
+                    print(
+                        f"Error processing {item}: {e}"
+                    )
+
+        except (FileNotFoundError,
+                NotADirectoryError) as e:
+            print(e)
+
+        except Exception as e:
+            print(
+                f"Unexpected error: {e}"
+            )
         
         return files
 
