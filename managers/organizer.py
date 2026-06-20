@@ -18,10 +18,23 @@ class Organizer:
     
 
     def create_category_folder(self,base_path,category):
+        try:
+            folder = Path(base_path) / category
+            folder.mkdir(exist_ok=True)
+            return folder
+        
+        except PermissionError:
+            print(
+                f"Permission denied while creating "
+                f"folder '{category}'"
+            )
 
-        folder = Path(base_path) / category
-        folder.mkdir(exist_ok=True)
-        return folder
+        except Exception as e:
+            print(
+                f"Folder creation error: {e}"
+            )
+
+        return None
     
 
     def move_file(self,source,destination):
