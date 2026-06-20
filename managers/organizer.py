@@ -38,7 +38,28 @@ class Organizer:
     
 
     def move_file(self,source,destination):
-        shutil.move(str(source),str(destination))
+        try:
+            shutil.move(str(source),str(destination))
+            
+        except FileNotFoundError:
+            print(
+                f"File not found: {source}"
+            )
+
+        except PermissionError:
+            print(
+                f"Permission denied: {source}"
+            )
+
+        except shutil.Error as e:
+            print(
+                f"Move error: {e}"
+            )
+
+        except Exception as e:
+            print(
+                f"Unexpected error: {e}"
+            )
 
     def organize_file(self,files):
         for file in files:
