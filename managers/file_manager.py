@@ -43,15 +43,33 @@ class FileManager:
         return files
 
     def get_file_metaData(self,file_path):
-        stat = file_path.stat()
-        created = datetime.fromtimestamp(stat.st_ctime)
-        modified = datetime.fromtimestamp(stat.st_mtime)
-        return FileInfo(name=file_path.name,
-                        extension=file_path.suffix,
-                        size=stat.st_size,
-                        path=str(file_path.resolve()),
-                        created_date=created,
-                        modified_date=modified)
+        try:
+            stat = file_path.stat()
+            created = datetime.fromtimestamp(stat.st_ctime)
+            modified = datetime.fromtimestamp(stat.st_mtime)
+            return FileInfo(name=file_path.name,
+                            extension=file_path.suffix,
+                            size=stat.st_size,
+                            path=str(file_path.resolve()),
+                            created_date=created,
+                            modified_date=modified)
+        
+        except FileNotFoundError:
+            print(
+                f"File not found: {file_path}"
+            )
+
+        except PermissionError:
+            print(
+                f"Permission denied: {file_path}"
+            )
+
+        except Exception as e:
+            print(
+                f"Metadata error for {file_path}: {e}"
+            )
+
+        return None
     
 
     def get_total_files(self,files):
